@@ -1,19 +1,33 @@
 import React, { useEffect, useState } from 'react'
 import axios from 'axios'
+import { Link, useParams } from 'react-router-dom';
 
 
-export default function Home() {
+export default function Student() {
 
-    const[users, setUsers] = useState([])
+    const[students, setStudents] = useState([])
+
+    const {id} = useParams()
 
     useEffect(()=>{
-        loadUsers();
+        loadStudents();
     },[]);
 
-    const loadUsers=async()=>{
-        const result = await axios.get("http://localhost:8080/getAllPupils");
-        setUsers(result.data);
+    const loadStudents=async()=>{
+        const result = await axios.get("http://localhost:8080/students/all");
+        setStudents(result.data);
     }
+
+    const deleteStudent = async (id) => {
+        await axios.delete(`http://localhost:8080/students/${id}`)
+        loadStudents()
+    }
+
+    if (!students || students.length === 0) {
+        return <div>
+            <b>No students to display.</b>
+            </div>;
+      }
     
 
   return (
@@ -41,7 +55,7 @@ export default function Home() {
                     Broj mobitela
                 </th>
                 <th scope="col" className="px-6 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                    Škola
+                    Fakultet
                 </th>
                 <th scope="col" className="px-6 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white text-center">
                     Action
@@ -54,34 +68,36 @@ export default function Home() {
         <tbody>
 
             {
-                users.map((user, index)=>(
+                students.map((student, index)=>(
                     <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 text-center">
                         <th scope="row" key= {index} className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                             {index+1} 
                         </th>
                         <td className="px-6 py-4">
-                            {user.firstName}
+                            {student.firstName}
                         </td>
                         <td className="px-6 py-4">
-                            {user.lastName}
+                            {student.lastName}
                         </td>
                         <td className="px-6 py-4">
-                            {user.email}
+                            {student.email}
                         </td>
                         <td className="px-6 py-4">
-                            {user.phoneNumber}
+                            {student.phoneNumber}
                         </td>
                         <td className="px-6 py-4">
-                            {user.schoolName}
+                            {student.universityName}
                         </td>
                         <td className="px-6 py-4 text-center ">
-                            <button type="button" className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 text-center mr-3 md:mr-0 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 mx-5">
+                            <Link type="button" className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 text-center mr-3 md:mr-0 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 mx-5"
+                            to={`/viewstudent/${student.id}`}>
                             View
-                            </button>
-                            <button type="button" className="text-white border border-blue-700 hover:text-white-300 hover:bg-blue-700 focus:ring-4 focus:outline-white font-medium rounded-lg text-sm px-4 py-2 text-center mr-3 md:mr-0 dark:bg-white-600 dark:hover:bg-white-700 dark:focus:ring-white-800 mx-5">
+                            </Link>
+                            <button type="button" className="text-blue-400 border border-blue-400 hover:text-white-300 focus:ring-4 focus:outline-white font-medium rounded-lg text-sm px-4 py-2 text-center mr-3 md:mr-0 dark:bg-white-600 dark:hover:bg-white-700 dark:focus:ring-white-800 mx-5">
                             Edit
                             </button>
-                            <button type="button" className="text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-4 py-2 text-center mr-3 md:mr-0 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800 mx-5">
+                            <button type="button" className="text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-4 py-2 text-center mr-3 md:mr-0 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800 mx-5"
+                             onClick={()=> deleteStudent(student.id)}>
                             Delete
                             </button>
                         </td>

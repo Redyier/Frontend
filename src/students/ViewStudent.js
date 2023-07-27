@@ -5,7 +5,7 @@ import axios from 'axios';
 
 export default function ViewPupil() {
 
-    const [pupil, setPupil] = useState({
+    const [student, setStudent] = useState({
     })
 
     const {id} = useParams();
@@ -16,8 +16,8 @@ export default function ViewPupil() {
     });
 
     const loadPupil = async () => {
-        const result = await axios.get(`http://localhost:8080/pupils/all/${id}`)
-        setPupil(result.data)
+        const result = await axios.get(`http://localhost:8080/students/all/${id}`)
+        setStudent(result.data)
     }
 
     return (
@@ -32,63 +32,63 @@ export default function ViewPupil() {
                                 <li className="list-group-item my-5">
                                     <li className="flex justify-evenly px-100">
                                         <b>Ime:</b>
-                                        <b>{pupil.firstName}</b>
+                                        <b>{student.firstName}</b>
                                     </li>
                                 </li>
 
                                 <li className="list-group-item my-5">
                                     <li className="flex justify-evenly">
                                         <b>Prezime:</b>
-                                        <b>{pupil.lastName}</b>
+                                        <b>{student.lastName}</b>
                                     </li>
                                 </li>
 
                                 <li className="list-group-item my-5">
                                     <li className="flex justify-evenly">
                                         <b>Datum rođenja:</b>
-                                        <b>{pupil.dateOfBirth}</b>
+                                        <b>{student.dateOfBirth}</b>
                                     </li>
                                 </li>
 
                                 <li className="list-group-item my-5">
                                     <li className="flex justify-evenly">
-                                        <b>Ime škole:</b>
-                                        <b>{pupil.schoolName}</b>
+                                        <b>Ime sveučilišta:</b>
+                                        <b>{student.universityName}</b>
                                     </li>
                                 </li>
 
                                 <li className="list-group-item my-5">
                                     <li className="flex justify-evenly">
-                                        <b>Smjer školovanja:</b>
-                                        <b>{pupil.courseOfStudies}</b>
+                                        <b>Smjer Studija:</b>
+                                        <b>{student.courseOfStudies}</b>
                                     </li>
                                 </li>
 
                                 <li className="list-group-item my-5">
                                     <li className="flex justify-evenly">
                                         <b>Broj telefona::</b>
-                                        <b>{pupil.phoneNumber}</b>
+                                        <b>{student.phoneNumber}</b>
                                     </li>
                                 </li>
 
                                 <li className="list-group-item my-5">
                                     <li className="flex justify-evenly">
                                         <b>email:</b>
-                                        <b>{pupil.email}</b>
+                                        <b>{student.email}</b>
                                     </li>
                                 </li>
 
                                 <li className="list-group-item my-5">
                                     <li className="flex justify-evenly">
                                         <b>Prebivalište:</b>
-                                        <b>{pupil.residence}</b>
+                                        <b>{student.residence}</b>
                                     </li>
                                 </li>
 
                                 <li className="list-group-item my-5">
                                     <li className="flex justify-evenly">
                                         <b>Poznate tehnologije:</b>
-                                        <b>{pupil.familiarTechnologies}</b>
+                                        <b>{student.familiarTechnologies}</b>
                                     </li>
                                 </li>
                                 
@@ -98,7 +98,7 @@ export default function ViewPupil() {
 
                 
                     <Link type="button" className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 text-center mr-3 md:mr-0 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 mx-5"
-                            to={"/pupils"}>
+                            to={"/students"}>
                             Natrag
                     </Link>
 
