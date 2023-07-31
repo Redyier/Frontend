@@ -1,11 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import axios from "axios";
-import {useNavigate, useParams} from 'react-router-dom';
+import {useNavigate} from "react-router-dom";
 
-
-export default function EditPupil() {
+export default function PupilForm() {
     const navigate = useNavigate();
-    const { id } = useParams();
 
 
     const [firstName, setFirstName] = useState('');
@@ -17,25 +15,6 @@ export default function EditPupil() {
     const [phoneNumber, setPhoneNumber] = useState('');
     const [residence, setResidence] = useState('');
     const [familiarTechnologies, setFamiliarTechnologies] = useState('');
-
-    useEffect(() => {
-        axios.get(`http://localhost:8080/pupils/all/${id}`)
-            .then((response) => {
-                const pupilData = response.data;
-                setFirstName(pupilData.firstName);
-                setLastName(pupilData.lastName);
-                setEmail(pupilData.email);
-                setDateOfBirth(pupilData.dateOfBirth);
-                setSchoolName(pupilData.schoolName);
-                setCourseOfStudies(pupilData.courseOfStudies);
-                setPhoneNumber(pupilData.phoneNumber);
-                setResidence(pupilData.residence);
-                setFamiliarTechnologies(pupilData.familiarTechnologies);
-            })
-            .catch((error) => {
-                console.error('Error fetching pupil data:', error);
-            });
-    }, [id]);
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -52,14 +31,24 @@ export default function EditPupil() {
             familiarTechnologies,
         };
 
-        axios.put(`http://localhost:8080/pupils/update/${id}`, formData)
+        axios.post('http://localhost:8080/pupils/add', formData)
             .then((response) => {
-                console.log('Data successfully updated:', response.data);
-                navigate('/pupils');
+                console.log('Data successfully posted:', response.data);
+                setFirstName('');
+                setLastName('');
+                setEmail('');
+                setDateOfBirth('');
+                setSchoolName('');
+                setCourseOfStudies('');
+                setPhoneNumber('');
+                setResidence('');
+                setFamiliarTechnologies('');
+                navigate('/');
 
             })
             .catch((error) => {
-                console.error('Error updating data:', error);
+
+                console.error('Error posting data:', error);
             });
     };
 
@@ -115,13 +104,13 @@ export default function EditPupil() {
                         <div className="text-sm text-red-400"></div>
                     </div>
                     <div className="sm:col-span-6">
-                        <label htmlFor="schoolName" className="block text-sm font-medium text-gray-700"> Ime škole
+                        <label htmlFor="school_name" className="block text-sm font-medium text-gray-700"> Ime škole
                         </label>
                         <div className="mt-1">
                             <input
                                 type="text"
-                                id="schoolName"
-                                name="schoolName"
+                                id="school_name"
+                                name="school_name"
                                 placeholder="Unesite ime škole"
                                 value={schoolName}
                                 onChange={(e) => setSchoolName(e.target.value)}
