@@ -29,7 +29,7 @@ export default function ViewPupil() {
     try {
       const result = await axios.get(`http://localhost:8080/students/${id}/files`);
       setFileData(result.data);
-      console.log(fileData[id - 1])
+      console.log(fileData)
     } catch (error) {
       console.error('Error fetching file data:', error);
     }
@@ -126,6 +126,10 @@ export default function ViewPupil() {
                       <b>{pupilData.familiarTechnologies}</b>
                     </th>
                   </tr>
+
+
+
+                  
                   
 
                   <tr>
@@ -174,7 +178,11 @@ export default function ViewPupil() {
                             </a>
                     </th>
                   </tr>
-                  
+
+
+
+
+               
                 </thead>
               </table>
             </div>

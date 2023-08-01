@@ -5,22 +5,61 @@ import axios from 'axios';
 
 export default function ViewPupil() {
 
-    const [pupil, setPupil] = useState({
-    })
+    const [pupil, setPupil] = useState({})
+    const [fileData, setFileData] = useState({});
+    const [allFiles, setAllFiles] = useState({});
+    const [fileDownload, setFileDownload] = useState({});
 
     const {id} = useParams();
 
     useEffect(() => {
-        loadPupil()
-    });
+        loadPupil();
+        loadFile();
+        loadAllFiles();
+        downloadFile();
+      }, []);
 
+      const loadPupil = async () => {
+        try {
+          const result = await axios.get(`http://localhost:8080/pupils/all/${id}`);
+          setPupil(result.data);
+          console.log(pupil)
+        } catch (error) {
+          console.error('Error fetching pupil data:', error);
+        }
+      };
+    
+      const loadFile = async () => {
+        try {
+          const result = await axios.get(`http://localhost:8080/pupils/${(parseInt(id) - 1) * 4 + 1}/files`);
+          setFileData(result.data);
+          console.log(fileData)
+        } catch (error) {
+          console.error('Error fetching file data:', error);
+        }
+      };
 
-    const loadPupil = async () => {
-        const result = await axios.get(`http://localhost:8080/pupils/all/${id}`)
-        setPupil(result.data)
-    }
+      const loadAllFiles = async () => {
+        try {
+          const result = await axios.get(`http://localhost:8080/pupils/files`);
+          setAllFiles(result.data);
+          console.log(allFiles)
+        } catch (error) {
+          console.error('Error fetching file data:', error);
+        }
+      };
 
+    
+      const downloadFile = async () => {
+        try {
+          const result = await axios.get(`http://localhost:8080/pupils/files/${id}`);
+          setFileDownload(result.data);
+        } catch (error) {
+          console.error('Error fetching file data:', error);
+        }
+      };
 
+   
     
 
     return (
@@ -97,7 +136,201 @@ export default function ViewPupil() {
                                     </th>
                                 </tr>
 
-                                
+
+
+                                <tr>
+                                    {allFiles[(parseInt(id) - 1) * 4] ? (
+                                            <>
+                                            <th scope="col" className="border px-6 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                                <b>ID dokumenta</b>
+                                            </th>
+                                            <th scope="col" className="border px-6 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                                <b>{allFiles[(parseInt(id) - 1) * 4].id}</b>
+                                            </th>
+                                            </>
+                                        ) : (
+                                            <tr>
+                                            <td colSpan="2" className="text-center">
+                                                <b>No file data available.</b>
+                                            </td>
+                                            </tr>
+                                        )}
+                                    </tr>
+                                    <tr>
+                                    {allFiles[(parseInt(id) - 1) * 4] ? (
+                                            <>
+                                            <th scope="col" className="border px-6 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                                <b>Ime dokumenta</b>
+                                            </th>
+                                            <th scope="col" className="border px-6 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                                <b>{allFiles[(parseInt(id) - 1) * 4].docName}</b>
+                                            </th>
+                                            </>
+                                        ) : (
+                                            <tr>
+                                            <td colSpan="2" className="text-center">
+                                                <b>No file data available.</b>
+                                            </td>
+                                            </tr>
+                                        )}
+                                    </tr>
+                                    <tr>
+                                        <th scope="col" className="border border-black-100 px-6 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                            <b>Preuzmi dokument</b>
+                                        </th>
+                                        <th scope="col" className="border border-black-100 px-6 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                            <a href={`http://localhost:8080/pupils/files/${(parseInt(id) - 1) * 4 + 1}`} download target="_blank" rel="noopener noreferrer">
+                                                <b>Otvori</b>
+                                                </a>
+                                        </th>
+                                    </tr>
+
+                                    <tr>
+                                    {allFiles[(parseInt(id) - 1) * 4 + 1] ? (
+                                            <>
+                                            <th scope="col" className="border px-6 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                                <b>ID dokumenta</b>
+                                            </th>
+                                            <th scope="col" className="border px-6 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                                <b>{allFiles[(parseInt(id) - 1) * 4 + 1].id}</b>
+                                            </th>
+                                            </>
+                                        ) : (
+                                            <tr>
+                                            <td colSpan="2" className="text-center">
+                                                <b>No file data available.</b>
+                                            </td>
+                                            </tr>
+                                        )}
+                                    </tr>
+                                    <tr>
+                                    {allFiles[(parseInt(id) - 1) * 4 + 1] ? (
+                                            <>
+                                            <th scope="col" className="border px-6 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                                <b>Ime dokumenta</b>
+                                            </th>
+                                            <th scope="col" className="border px-6 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                                <b>{allFiles[(parseInt(id) - 1) * 4 + 1].docName}</b>
+                                            </th>
+                                            </>
+                                        ) : (
+                                            <tr>
+                                            <td colSpan="2" className="text-center">
+                                                <b>No file data available.</b>
+                                            </td>
+                                            </tr>
+                                        )}
+                                    </tr>
+                                    <tr>
+                                        <th scope="col" className="border border-black-100 px-6 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                            <b>Preuzmi dokument</b>
+                                        </th>
+                                        <th scope="col" className="border border-black-100 px-6 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                            <a href={`http://localhost:8080/pupils/files/${(parseInt(id) - 1) * 4 + 2}`} download target="_blank" rel="noopener noreferrer">
+                                                <b>Otvori</b>
+                                                </a>
+                                        </th>
+                                    </tr>
+
+
+
+                                    <tr>
+                                    {allFiles[(parseInt(id) - 1) * 4 + 2] ? (
+                                            <>
+                                            <th scope="col" className="border px-6 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                                <b>ID dokumenta</b>
+                                            </th>
+                                            <th scope="col" className="border px-6 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                                <b>{allFiles[(parseInt(id) - 1) * 4 + 2].id}</b>
+                                            </th>
+                                            </>
+                                        ) : (
+                                            <tr>
+                                            <td colSpan="2" className="text-center">
+                                                <b>No file data available.</b>
+                                            </td>
+                                            </tr>
+                                        )}
+                                    </tr>
+                                    <tr>
+                                    {allFiles[(parseInt(id) - 1) * 4 + 2] ? (
+                                            <>
+                                            <th scope="col" className="border px-6 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                                <b>Ime dokumenta</b>
+                                            </th>
+                                            <th scope="col" className="border px-6 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                                <b>{allFiles[(parseInt(id) - 1) * 4 + 2].docName}</b>
+                                            </th>
+                                            </>
+                                        ) : (
+                                            <tr>
+                                            <td colSpan="2" className="text-center">
+                                                <b>No file data available.</b>
+                                            </td>
+                                            </tr>
+                                        )}
+                                    </tr>
+                                    <tr>
+                                        <th scope="col" className="border border-black-100 px-6 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                            <b>Preuzmi dokument</b>
+                                        </th>
+                                        <th scope="col" className="border border-black-100 px-6 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                            <a href={`http://localhost:8080/pupils/files/${(parseInt(id) - 1) * 4 + 3}`} download target="_blank" rel="noopener noreferrer">
+                                                <b>Otvori</b>
+                                                </a>
+                                        </th>
+                                    </tr>
+
+
+
+                                    <tr>
+                                    {allFiles[(parseInt(id) - 1) * 4 + 3] ? (
+                                            <>
+                                            <th scope="col" className="border px-6 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                                <b>ID dokumenta</b>
+                                            </th>
+                                            <th scope="col" className="border px-6 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                                <b>{allFiles[(parseInt(id) - 1) * 4 + 3].id}</b>
+                                            </th>
+                                            </>
+                                        ) : (
+                                            <tr>
+                                            <td colSpan="2" className="text-center">
+                                                <b>No file data available.</b>
+                                            </td>
+                                            </tr>
+                                        )}
+                                    </tr>
+                                    <tr>
+                                    {allFiles[(parseInt(id) - 1) * 4 + 3] ? (
+                                            <>
+                                            <th scope="col" className="border px-6 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                                <b>Ime dokumenta</b>
+                                            </th>
+                                            <th scope="col" className="border px-6 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                                <b>{allFiles[(parseInt(id) - 1) * 4 + 3].docName}</b>
+                                            </th>
+                                            </>
+                                        ) : (
+                                            <tr>
+                                            <td colSpan="2" className="text-center">
+                                                <b>No file data available.</b>
+                                            </td>
+                                            </tr>
+                                        )}
+                                    </tr>
+                                    <tr>
+                                        <th scope="col" className="border border-black-100 px-6 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                            <b>Preuzmi dokument</b>
+                                        </th>
+                                        <th scope="col" className="border border-black-100 px-6 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                            <a href={`http://localhost:8080/pupils/files/${(parseInt(id) - 1) * 4 + 4}`} download target="_blank" rel="noopener noreferrer">
+                                                <b>Otvori</b>
+                                                </a>
+                                        </th>
+                                    </tr>
+
+          
 
                                 </thead>
                             </table>

@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import axios from "axios";
+import axios from 'axios';
 import {useNavigate} from "react-router-dom";
 
 export default function PupilForm() {
-    const navigate = useNavigate();
 
+    const navigate = useNavigate();
 
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
@@ -15,49 +15,65 @@ export default function PupilForm() {
     const [phoneNumber, setPhoneNumber] = useState('');
     const [residence, setResidence] = useState('');
     const [familiarTechnologies, setFamiliarTechnologies] = useState('');
+    const [file, setFile] = useState(null);
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-
-        const formData = {
-            firstName,
-            lastName,
-            email,
-            dateOfBirth,
-            schoolName,
-            courseOfStudies,
-            phoneNumber,
-            residence,
-            familiarTechnologies,
-        };
-
-        axios.post('http://localhost:8080/pupils/add', formData)
-            .then((response) => {
-                console.log('Data successfully posted:', response.data);
-                setFirstName('');
-                setLastName('');
-                setEmail('');
-                setDateOfBirth('');
-                setSchoolName('');
-                setCourseOfStudies('');
-                setPhoneNumber('');
-                setResidence('');
-                setFamiliarTechnologies('');
-                navigate('/');
-
-            })
-            .catch((error) => {
-
-                console.error('Error posting data:', error);
+    const handleFileUpload = async (id) => {
+        if (file) {
+          const formData = new FormData();
+          formData.append('file', file);
+    
+          try {
+            const response = await axios.post(`http://localhost:8080/pupils/${id}/files`, formData, {
+              headers: {
+                'Content-Type': 'multipart/form-data',
+              },
             });
-    };
+            console.log('File uploaded successfully:', response.data);
+          } catch (error) {
+            console.error('Error uploading file:', error);
+          }
+        }
+      };
+    
+      const handleSubmit = async (e) => {
+        e.preventDefault();
+    
+        const studentData = {
+          firstName,
+          lastName,
+          email,
+          dateOfBirth,
+          schoolName,
+          courseOfStudies,
+          phoneNumber,
+          residence,
+          familiarTechnologies,
+        };
+    
+        try {
+          const response = await axios.post('http://localhost:8080/pupils/add', studentData);
+          console.log('Student data successfully posted:', response.data);
+    
+          // Call handleFileUpload to upload the file after successfully adding the student
+          if (response.data && response.data.id) {
+            handleFileUpload(response.data.id);
+          }
+    
+          // (reset state variables)
+          navigate('/');
+        } catch (error) {
+          console.error('Error posting student data:', error);
+        }
+      };
+    
 
     return (
-        <div className='py-20'>
-            <div className='max-w-2xl mx-auto sm:px-6 lg:px-8'>
+        <div className="py-20">
+            <div className="max-w-2xl mx-auto sm:px-6 lg:px-8">
                 <form onSubmit={handleSubmit}>
                     <div className="sm:col-span-6">
-                        <label htmlFor="first_name" className="block text-sm font-medium text-gray-700"> Ime
+                        <label htmlFor="first_name" className="block text-sm font-medium text-gray-700">
+                            Ime
                         </label>
                         <div className="mt-1">
                             <input
@@ -73,7 +89,8 @@ export default function PupilForm() {
                         <div className="text-sm text-red-400"></div>
                     </div>
                     <div className="sm:col-span-6">
-                        <label htmlFor="last_name" className="block text-sm font-medium text-gray-700"> Prezime
+                        <label htmlFor="last_name" className="block text-sm font-medium text-gray-700">
+                            Prezime
                         </label>
                         <div className="mt-1">
                             <input
@@ -89,7 +106,9 @@ export default function PupilForm() {
                         <div className="text-sm text-red-400"></div>
                     </div>
                     <div className="sm:col-span-6">
-                        <label htmlFor="email" className="block text-sm font-medium text-gray-700"> Email </label>
+                        <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+                            Email
+                        </label>
                         <div className="mt-1">
                             <input
                                 type="email"
@@ -104,14 +123,15 @@ export default function PupilForm() {
                         <div className="text-sm text-red-400"></div>
                     </div>
                     <div className="sm:col-span-6">
-                        <label htmlFor="school_name" className="block text-sm font-medium text-gray-700"> Ime škole
+                        <label htmlFor="school_name" className="block text-sm font-medium text-gray-700">
+                            Ime škole
                         </label>
                         <div className="mt-1">
                             <input
                                 type="text"
                                 id="school_name"
                                 name="school_name"
-                                placeholder="Unesite ime škole"
+                                placeholder="Unesite ime sveučilišta"
                                 value={schoolName}
                                 onChange={(e) => setSchoolName(e.target.value)}
                                 className="block w-full appearance-none bg-white border border-gray-400 rounded-md py-2 px-3 text-base leading-normal transition duration-150 ease-in-out sm:text-sm sm:leading-5 text-black"
@@ -120,7 +140,8 @@ export default function PupilForm() {
                         <div className="text-sm text-red-400"></div>
                     </div>
                     <div className="sm:col-span-6">
-                        <label htmlFor="course_of_studies" className="block text-sm font-medium text-gray-700"> Tijek studija
+                        <label htmlFor="course_of_studies" className="block text-sm font-medium text-gray-700">
+                            Tijek studija
                         </label>
                         <div className="mt-1">
                             <input
@@ -136,7 +157,8 @@ export default function PupilForm() {
                         <div className="text-sm text-red-400"></div>
                     </div>
                     <div className="sm:col-span-6">
-                        <label htmlFor="phone_number" className="block text-sm font-medium text-gray-700"> Broj telefona
+                        <label htmlFor="phone_number" className="block text-sm font-medium text-gray-700">
+                            Broj telefona
                         </label>
                         <div className="mt-1">
                             <input
@@ -152,7 +174,8 @@ export default function PupilForm() {
                         <div className="text-sm text-red-400"></div>
                     </div>
                     <div className="sm:col-span-6">
-                        <label htmlFor="residence" className="block text-sm font-medium text-gray-700"> Prebivalište
+                        <label htmlFor="residence" className="block text-sm font-medium text-gray-700">
+                            Prebivalište
                         </label>
                         <div className="mt-1">
                             <input
@@ -166,50 +189,70 @@ export default function PupilForm() {
                             />
                         </div>
                         <div className="text-sm text-red-400"></div>
-                    </div>
-                    <div className="sm:col-span-6">
-                        <label htmlFor="familiar_technologies" className="block text-sm font-medium text-gray-700"> Poznate tehnologije
-                        </label>
-                        <div className="mt-1">
-                            <input
-                                type="text"
-                                id="familiar_technologies"
-                                name="familiar_technologies"
-                                placeholder="Unesite poznate tehnologije"
-                                value={familiarTechnologies}
-                                onChange={(e) => setFamiliarTechnologies(e.target.value)}
-                                className="block w-full appearance-none bg-white border border-gray-400 rounded-md py-2 px-3 text-base leading-normal transition duration-150 ease-in-out sm:text-sm sm:leading-5 text-black"
-                            />
-                        </div>
-                        <div className="text-sm text-red-400"></div>
-                    </div>
-                    <div className="sm:col-span-6">
-                        <label htmlFor="dateOfBirth" className="block text-sm font-medium text-gray-700"> Datum rođenja
-                        </label>
-                        <div className="mt-1">
-                            <input
-                                type="date"
-                                id="dateOfBirth"
-                                name="dateOfBirth"
-                                value={dateOfBirth}
-                                onChange={(e) => setDateOfBirth(e.target.value)}
-                                className="block w-full appearance-none bg-white border border-gray-400 rounded-md py-2 px-3 text-base leading-normal transition duration-150 ease-in-out sm:text-sm sm:leading-5 text-black"
-                            />
-                        </div>
-                        <div className="text-sm text-red-400"></div>
-                    </div>
-
-
-                    <div className="mt-6 p-4 flex justify-end">
-                        <button
-                            type="submit"
-                            className="px-4 py-2 bg-indigo-500 hover:bg-indigo-700 rounded-lg text-white"
-                        >
-                            Dalje
-                        </button>
-                    </div>
-                </form>
             </div>
-        </div>
-    );
+            <div className="sm:col-span-6">
+                <label htmlFor="familiar_technologies" className="block text-sm font-medium text-gray-700">
+                    Poznate tehnologije
+                </label>
+                <div className="mt-1">
+                    <input
+                        type="text"
+                        id="familiar_technologies"
+                        name="familiar_technologies"
+                        placeholder="Unesite poznate tehnologije"
+                        value={familiarTechnologies}
+                        onChange={(e) => setFamiliarTechnologies(e.target.value)}
+                        className="block w-full appearance-none bg-white border border-gray-400 rounded-md py-2 px-3 text-base leading-normal transition duration-150 ease-in-out sm:text-sm sm:leading-5 text-black"
+                    />
+                </div>
+                <div className="text-sm text-red-400"></div>
+            </div>
+            <div className="sm:col-span-6">
+                <label htmlFor="dateOfBirth" className="block text-sm font-medium text-gray-700">
+                    Datum rođenja
+                </label>
+                <div className="mt-1">
+                    <input
+                        type="date"
+                        id="dateOfBirth"
+                        name="dateOfBirth"
+                        value={dateOfBirth}
+                        onChange={(e) => setDateOfBirth(e.target.value)}
+                        className="block w-full appearance-none bg-white border border-gray-400 rounded-md py-2 px-3 text-base leading-normal transition duration-150 ease-in-out sm:text-sm sm:leading-5 text-black"
+                    />
+                </div>
+                <div className="text-sm text-red-400"></div>
+            </div>
+
+           
+            <div className="sm:col-span-6">
+            <label htmlFor="file" className="block text-sm font-medium text-gray-700">
+              Odaberite datoteku
+            </label>
+            <div className="mt-1">
+              <input
+                type="file"
+                id="file"
+                name="file"
+                accept=".pdf,.doc,.docx,.png,.jpg,.jpeg"
+                onChange={(e) => setFile(e.target.files[0])}
+                className="block w-full appearance-none bg-white border border-gray-400 rounded-md py-2 px-3 text-base leading-normal transition duration-150 ease-in-out sm:text-sm sm:leading-5 text-black"
+              />
+            </div>
+            <div className="text-sm text-red-400"></div>
+          </div>
+
+
+            <div className="mt-6 p-4 flex justify-end">
+                <button
+                    type="submit"
+                    className="px-4 py-2 bg-indigo-500 hover:bg-indigo-700 rounded-lg text-white"
+                >
+                    Dalje
+                </button>
+            </div>
+        </form>
+</div>
+</div>
+);
 }

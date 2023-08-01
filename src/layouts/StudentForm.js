@@ -15,42 +15,57 @@ export default function StudentForm() {
     const [phoneNumber, setPhoneNumber] = useState('');
     const [residence, setResidence] = useState('');
     const [familiarTechnologies, setFamiliarTechnologies] = useState('');
+    const [file, setFile] = useState(null);
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-
-        const formData = {
-            firstName,
-            lastName,
-            email,
-            dateOfBirth,
-            universityName,
-            courseOfStudies,
-            phoneNumber,
-            residence,
-            familiarTechnologies,
-        };
-
-        axios
-            .post('http://localhost:8080/students/add', formData)
-            .then((response) => {
-                console.log('Data successfully posted:', response.data);
-                setFirstName('');
-                setLastName('');
-                setEmail('');
-                setDateOfBirth('');
-                setUniversityName('');
-                setCourseOfStudies('');
-                setPhoneNumber('');
-                setResidence('');
-                setFamiliarTechnologies('');
-                navigate('/');
-
-            })
-            .catch((error) => {
-                console.error('Error posting data:', error);
+    const handleFileUpload = async (studentId) => {
+        if (file) {
+          const formData = new FormData();
+          formData.append('file', file);
+    
+          try {
+            const response = await axios.post(`http://localhost:8080/students/${studentId}/files`, formData, {
+              headers: {
+                'Content-Type': 'multipart/form-data',
+              },
             });
-    };
+            console.log('File uploaded successfully:', response.data);
+          } catch (error) {
+            console.error('Error uploading file:', error);
+          }
+        }
+      };
+    
+      const handleSubmit = async (e) => {
+        e.preventDefault();
+    
+        const studentData = {
+          firstName,
+          lastName,
+          email,
+          dateOfBirth,
+          universityName,
+          courseOfStudies,
+          phoneNumber,
+          residence,
+          familiarTechnologies,
+        };
+    
+        try {
+          const response = await axios.post('http://localhost:8080/students/add', studentData);
+          console.log('Student data successfully posted:', response.data);
+    
+          // Call handleFileUpload to upload the file after successfully adding the student
+          if (response.data && response.data.id) {
+            handleFileUpload(response.data.id);
+          }
+    
+          // (reset state variables)
+          navigate('/');
+        } catch (error) {
+          console.error('Error posting student data:', error);
+        }
+      };
+    
 
     return (
         <div className="py-20">
@@ -208,6 +223,25 @@ export default function StudentForm() {
                 </div>
                 <div className="text-sm text-red-400"></div>
             </div>
+
+           
+            <div className="sm:col-span-6">
+            <label htmlFor="file" className="block text-sm font-medium text-gray-700">
+              Odaberite datoteku
+            </label>
+            <div className="mt-1">
+              <input
+                type="file"
+                id="file"
+                name="file"
+                accept=".pdf,.doc,.docx,.png,.jpg,.jpeg"
+                onChange={(e) => setFile(e.target.files[0])}
+                className="block w-full appearance-none bg-white border border-gray-400 rounded-md py-2 px-3 text-base leading-normal transition duration-150 ease-in-out sm:text-sm sm:leading-5 text-black"
+              />
+            </div>
+            <div className="text-sm text-red-400"></div>
+          </div>
+
 
             <div className="mt-6 p-4 flex justify-end">
                 <button

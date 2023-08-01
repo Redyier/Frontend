@@ -16,6 +16,8 @@ export default function Student() {
         const result = await axios.get("http://localhost:8080/students/all");
         setStudents(result.data);
     }
+    
+
 
     const deleteStudent = async (id) => {
         await axios.delete(`http://localhost:8080/students/delete/${id}`)
